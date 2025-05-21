@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-slate-100 text-slate-800;
+  }
+  /* Style scrollbars for a more modern look (optional, WebKit specific) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-400 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
+}
+
+/* CodeMirror material theme overrides for better contrast with slate-100 background */
+.cm-s-material.CodeMirror {
+  @apply bg-slate-800 text-slate-200 shadow-lg; /* Darker background for editor */
+}
+.cm-s-material .CodeMirror-gutters {
+  @apply bg-slate-900 border-r border-slate-700;
+}
+.cm-s-material .CodeMirror-linenumber {
+  @apply text-slate-500;
+}
+.cm-s-material .CodeMirror-cursor {
+  @apply border-l border-slate-100;
+}
+.cm-s-material .cm-keyword { @apply text-purple-400; }
+.cm-s-material .cm-atom { @apply text-blue-400; }
+.cm-s-material .cm-number { @apply text-orange-400; }
+.cm-s-material .cm-def { @apply text-green-400; }
+.cm-s-material .cm-variable, .cm-s-material .cm-punctuation, .cm-s-material .cm-property, .cm-s-material .cm-operator { @apply text-sky-400; }
+.cm-s-material .cm-variable-2 { @apply text-red-400; }
+.cm-s-material .cm-variable-3, .cm-s-material .cm-type { @apply text-yellow-400; }
+.cm-s-material .cm-comment { @apply text-slate-500 italic; }
+.cm-s-material .cm-string { @apply text-teal-400; }
+.cm-s-material .cm-string-2 { @apply text-pink-400; }
+.cm-s-material .cm-meta { @apply text-lime-400; }
+.cm-s-material .cm-qualifier { @apply text-fuchsia-400; }
+.cm-s-material .cm-builtin { @apply text-indigo-400; }
+.cm-s-material .cm-bracket { @apply text-gray-500; }
+.cm-s-material .cm-tag { @apply text-red-400; }
+.cm-s-material .cm-attribute { @apply text-yellow-400; }
+.cm-s-material .cm-hr { @apply text-gray-500; }
+.cm-s-material .cm-link { @apply text-blue-400 underline; }
+.cm-s-material .CodeMirror-matchingbracket { @apply text-teal-400 bg-slate-700 outline-none; }
+.cm-s-material .CodeMirror-activeline-background { @apply bg-slate-700 bg-opacity-50; }
+
+/* General component transition class */
+.smooth-transition {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* For tab content fade-in */
+.tab-content-active {
+  animation: fadeIn 0.3s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
