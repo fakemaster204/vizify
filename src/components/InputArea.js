@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CodeEditor from './CodeEditor';
 
-function InputArea({ onGenerate, isProcessing, visualizationCode, onCodeChange, currentGlobalInputMode, onSetGlobalInputMode }) {
+function InputArea({ onGenerate, isProcessing, visualizationCode, onCodeChange, currentGlobalInputMode, onSetGlobalInputMode, onActivePromptChange }) { // Added onActivePromptChange
   const [inputType, setInputType] = useState(currentGlobalInputMode);
   const [prompt, setPrompt] = useState('');
   const [mermaidInput, setMermaidInput] = useState('');
@@ -10,10 +10,19 @@ function InputArea({ onGenerate, isProcessing, visualizationCode, onCodeChange, 
     setInputType(currentGlobalInputMode);
   }, [currentGlobalInputMode]);
 
+  // Update active prompt in App.js when text prompt changes
+  useEffect(() => {
+    if (inputType === 'text' && onActivePromptChange) {
+      onActivePromptChange(prompt);
+    }
+  }, [prompt, inputType, onActivePromptChange]);
+
   const handleGenerateClick = () => {
     if (onGenerate) {
       const content = inputType === 'text' ? prompt : mermaidInput;
-      onGenerate(content, inputType);
+      // Pass the actual prompt text if the mode is 'text'
+      const promptTextForApp = inputType === 'text' ? prompt : undefined; 
+      onGenerate(content, inputType, promptTextForApp);
     }
   };
 
@@ -21,6 +30,12 @@ function InputArea({ onGenerate, isProcessing, visualizationCode, onCodeChange, 
     setInputType(newMode);
     if (onSetGlobalInputMode) {
       onSetGlobalInputMode(newMode);
+    }
+    // If switching away from text prompt, clear the active prompt in App.js
+    if (newMode !== 'text' && onActivePromptChange) {
+        onActivePromptChange('');
+    } else if (newMode === 'text' && onActivePromptChange) {
+        onActivePromptChange(prompt); // Ensure active prompt is set if switching back to text
     }
   };
 
@@ -92,18 +107,18 @@ function InputArea({ onGenerate, isProcessing, visualizationCode, onCodeChange, 
         
         {inputType !== 'manual' && (
           <button
-            className={`${generateButtonStyles} mt-auto`} // mt-auto pushes button to bottom if space allows
+            className={`${generateButtonStyles} mt-auto`} 
             onClick={handleGenerateClick}
             disabled={isProcessing || (inputType === 'text' && !prompt.trim()) || (inputType === 'mermaid' && !mermaidInput.trim())}
           >
-            {isProcessing ? 'Processing...' : 'Generate'}
+            {isProcessing && currentGlobalInputMode === inputType ? 'Processing...' : 'Generate'}
           </button>
         )}
 
         {inputType === 'manual' && (
-          <div className="flex-grow flex flex-col h-full"> {/* Ensure this div takes height */}
+          <div className="flex-grow flex flex-col h-full"> 
             <label className="text-sm font-medium text-slate-600 mb-1">Live HTML/CSS/JS Editor:</label>
-            <div className="flex-grow h-full rounded-md overflow-hidden border border-slate-300 shadow-sm"> {/* Explicit height for CodeMirror parent */}
+            <div className="flex-grow h-full rounded-md overflow-hidden border border-slate-300 shadow-sm"> 
               <CodeEditor
                 value={visualizationCode}
                 onChange={onCodeChange}
